@@ -1,0 +1,14 @@
+name: 'Pivotal Tracker Release Notes'
+description: 'Collates release notes within Pivotal Tracker tickets'
+author: 'Jay Vincent'
+inputs:
+  github-token:
+    description: 'Pass in secrets.GITHUB_TOKEN'
+    required: true
+  pt-token:
+    description: 'Pass in secrets.PT_TOKEN'
+    required: true
+
+runs:
+  using: node14
+  main: dist/index.js

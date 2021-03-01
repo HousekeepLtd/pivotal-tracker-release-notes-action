@@ -1,0 +1,16 @@
+{
+  "name": "pivotal-tracker-release-notes-action",
+  "author": "Jay Vincent",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && ncc build dist/index.js"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
+    "@vercel/ncc": "^0.27.0",
+    "axios": "^0.21.1",
+    "typescript": "^4.2.2"
+  }
+}
