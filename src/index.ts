@@ -86,7 +86,7 @@ async function run(): Promise<void> {
      */
     let commentBody = '';
     for (const story of stories) {
-      commentBody += `**${story.story_type.toUpperCase}: ${story.name.toUpperCase()}**\n`;
+      commentBody += `**${story.story_type.toUpperCase()}: ${story.name.toUpperCase()}**\n`;
       if (story.release_notes) {
         commentBody += `${story.release_notes}\n`;
       }
