@@ -57,8 +57,6 @@ function run() {
             const octokit = github.getOctokit(GITHUB_TOKEN);
             /**
              * Get all commits on the PR.
-             *
-             * @TODO: We only want commits not on `master`.
              */
             core.info(`Getting commits for PR number ${pullRequest.number}...`);
             const response = yield octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/commits', Object.assign(Object.assign({}, github.context.repo), { pull_number: pullRequest.number }));
@@ -85,25 +83,27 @@ function run() {
             let stories = [];
             for (const storyId of storyIds) {
                 core.info(`Getting data for story ${storyId}...`);
-                const { data } = yield axios_1.default.get(`https://www.pivotaltracker.com/services/v5/stories/${storyId}`, {
+                const { data: story } = yield axios_1.default.get(`https://www.pivotaltracker.com/services/v5/stories/${storyId}`, {
                     headers: {
                         'X-TrackerToken': PT_TOKEN
                     }
                 });
-                stories.push(data);
+                /**
+                 * Match the release notes in the ticket description.
+                 * Must start with **Why** and finish with **Who**.
+                 */
+                const releaseNotes = story.description.match(/\*\*Why[\s\S]+\*\*Who.+$/m);
+                if (releaseNotes) {
+                    core.info(`Release notes found!`);
+                    story.release_notes = releaseNotes[0];
+                }
+                else {
+                    core.info(`No release notes found :(`);
+                }
+                stories.push(story);
             }
             /**
-             * Match the release notes in the ticket description.
-             * Must start with **Why** and finish with **Who**.
-             */
-            stories = stories.map(story => {
-                const releaseNotes = story.description.match(/\*\*Why[\s\S]+\*\*Who.+$/m);
-                if (!releaseNotes)
-                    return story;
-                return Object.assign(Object.assign({}, story), { release_notes: releaseNotes[0] });
-            });
-            /**
-             * Compose the comment to add to the PR.
+             * Compose the comment.
              */
             let commentBody = '';
             for (const story of stories) {
@@ -114,7 +114,7 @@ function run() {
                 commentBody += `**Link:** ${story.url}\n\n`;
             }
             /**
-             * Add the
+             * Add the comment to the PR.
              */
             core.info(`Adding comment to pull request...`);
             octokit.issues.createComment(Object.assign(Object.assign({}, github.context.repo), { issue_number: pullRequest.number, body: commentBody }));

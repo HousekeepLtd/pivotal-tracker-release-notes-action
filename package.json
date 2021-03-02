@@ -1,6 +1,6 @@
 {
   "name": "pivotal-tracker-release-notes-action",
-  "author": "Jay Vincent",
+  "author": "Jay Vincent <jay.vincent@housekeep.com>",
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
