@@ -34,12 +34,15 @@ async function run(): Promise<void> {
       pull_number: pullRequest.number
     });
 
+    core.info(`Found ${response.data.length} commits:`);
+
     /**
      * From commits, filter down to a list of Pivotal Tracker story IDs.
      */
     let storyIds = response.data
       .map(commit => commit.commit.message)
       .map(message => {
+        core.info(`Commit message: ${message}`);
         const matches = message.match(/^\[#([0-9]+?)\]/);
         if (!matches) return undefined;
         return matches[1]; // Just the ticket number, with no # or [] symbols.
