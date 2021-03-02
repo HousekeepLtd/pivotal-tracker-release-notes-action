@@ -31,8 +31,11 @@ async function run(): Promise<void> {
     core.info(`Getting commits for PR number ${pullRequest.number}...`);
     const response = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/commits', {
       ...github.context.repo,
-      pull_number: pullRequest.number
+      pull_number: pullRequest.number,
+      per_page: 100
     });
+
+    core.debug(JSON.stringify(response));
 
     core.info(`Found ${response.data.length} commits:`);
 

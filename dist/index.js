@@ -59,7 +59,8 @@ function run() {
              * Get all commits on the PR.
              */
             core.info(`Getting commits for PR number ${pullRequest.number}...`);
-            const response = yield octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/commits', Object.assign(Object.assign({}, github.context.repo), { pull_number: pullRequest.number }));
+            const response = yield octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/commits', Object.assign(Object.assign({}, github.context.repo), { pull_number: pullRequest.number, per_page: 100 }));
+            core.debug(JSON.stringify(response));
             core.info(`Found ${response.data.length} commits:`);
             /**
              * From commits, filter down to a list of Pivotal Tracker story IDs.
