@@ -111,7 +111,8 @@ async function run(): Promise<void> {
       if (story.release_notes) {
         commentBody += `${story.release_notes}\n`;
       }
-      commentBody += `**Link:** ${story.url}\n\n`;
+      commentBody += `**Link:** ${story.url}`;
+      commentBody += `\n&nbsp;\n`;
     }
 
     /**
