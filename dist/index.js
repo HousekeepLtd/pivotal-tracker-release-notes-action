@@ -108,7 +108,7 @@ function run() {
                  * Match the release notes in the ticket description.
                  * Must start with **Why** and finish with **Who**.
                  */
-                const releaseNotes = story.description.match(/\*\*Why[\s\S]+\*\*Who.+$/m);
+                const releaseNotes = story.description ? story.description.match(/\*\*Why[\s\S]+\*\*Who.+$/m) : null;
                 if (releaseNotes) {
                     core.info(`Release notes found!`);
                     story.release_notes = releaseNotes[0];
