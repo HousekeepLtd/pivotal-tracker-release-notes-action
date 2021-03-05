@@ -42,6 +42,19 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const axios_1 = __importDefault(__nccwpck_require__(6545));
+const storyTypeLabel = (type) => {
+    switch (type) {
+        case 'bug': {
+            return 'Bugfix';
+        }
+        case 'chore': {
+            return 'Chore';
+        }
+        case 'feature': {
+            return 'Feature';
+        }
+    }
+};
 /**
  * Main function.
  */
@@ -110,7 +123,8 @@ function run() {
              */
             let commentBody = '';
             for (const story of stories) {
-                commentBody += `**${story.story_type.toUpperCase()}: ${story.name.toUpperCase()}**\n`;
+                const title = story.name.replace('`', '"').toUpperCase();
+                commentBody += `**${storyTypeLabel(story.story_type)}: ${title}**\n`;
                 if (story.release_notes) {
                     commentBody += `${story.release_notes}\n`;
                 }

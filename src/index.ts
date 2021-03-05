@@ -2,12 +2,28 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import axios from 'axios';
 
+type StoryType = 'bug' | 'chore' | 'feature';
+
 interface PivotalTrackerStory {
   name: string;
   description: string;
   url: string;
-  story_type: 'feature' | 'bug' | 'chore';
+  story_type: StoryType;
   release_notes?: string;
+}
+
+const storyTypeLabel = (type: StoryType): string => {
+  switch (type) {
+    case 'bug': {
+      return 'Bugfix';
+    }
+    case 'chore': {
+      return 'Chore';
+    }
+    case 'feature': {
+      return 'Feature';
+    }
+  }
 }
 
 /**
@@ -90,7 +106,8 @@ async function run(): Promise<void> {
      */
     let commentBody = '';
     for (const story of stories) {
-      commentBody += `**${story.story_type.toUpperCase()}: ${story.name.toUpperCase()}**\n`;
+      const title = story.name.replace('`', '"').toUpperCase();
+      commentBody += `**${storyTypeLabel(story.story_type)}: ${title}**\n`;
       if (story.release_notes) {
         commentBody += `${story.release_notes}\n`;
       }
