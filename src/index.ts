@@ -26,6 +26,13 @@ const storyTypeLabel = (type: StoryType): string => {
   }
 }
 
+const formatCommentBodyForGoogleChat = (commentBody: string): string => {
+  let str = "```";
+  str += commentBody.replaceAll("\*\*", "*");
+  str += "```";
+  return str;
+}
+
 /**
  * Main function.
  */
@@ -118,11 +125,18 @@ async function run(): Promise<void> {
     /**
      * Add the comment to the PR.
      */
-    core.info(`Adding comment to pull request...`);
+    core.info(`Adding comments to pull request...`);
     octokit.issues.createComment({
       ...github.context.repo,
       issue_number: pullRequest.number,
       body: commentBody,
+    });
+
+    octokit.issues.createComment({
+      ...github.context.repo,
+      issue_number: pullRequest.number,
+      body: "### Formatting for Google Chat:\n\n"
+        + formatCommentBodyForGoogleChat(commentBody),
     });
 
   } catch (error) {
