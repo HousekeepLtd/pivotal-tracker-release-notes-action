@@ -114,12 +114,12 @@ async function run(): Promise<void> {
     let commentBody = '';
     for (const story of stories) {
       const title = story.name.replace('`', '"').toUpperCase();
-      commentBody += `**${storyTypeLabel(story.story_type)}: ${title}**\n`;
+      commentBody += `**${storyTypeLabel(story.story_type)}: ${title.trim()}**\n`;
       if (story.release_notes) {
         commentBody += `${story.release_notes}\n`;
       }
       commentBody += `**Link:** ${story.url}`;
-      commentBody += `\n&nbsp;\n`;
+      commentBody += `\n\n`;
     }
 
     /**
