@@ -126,13 +126,13 @@ async function run(): Promise<void> {
      * Add the comment to the PR.
      */
     core.info(`Adding comments to pull request...`);
-    octokit.issues.createComment({
+    await octokit.issues.createComment({
       ...github.context.repo,
       issue_number: pullRequest.number,
       body: commentBody,
     });
 
-    octokit.issues.createComment({
+    await octokit.issues.createComment({
       ...github.context.repo,
       issue_number: pullRequest.number,
       body: "### Formatting for Google Chat:\n\n"
