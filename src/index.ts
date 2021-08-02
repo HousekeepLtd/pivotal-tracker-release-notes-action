@@ -27,7 +27,7 @@ const storyTypeLabel = (type: StoryType): string => {
 }
 
 const formatCommentBodyForGoogleChat = (commentBody: string): string => {
-  let str = "```";
+  let str = "```\n";
   str += commentBody.replace(/\*\*/g, "*");
   str += "```";
   return str;
