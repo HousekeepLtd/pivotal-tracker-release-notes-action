@@ -79,15 +79,21 @@ async function run(): Promise<void> {
      * De-deduplicate the story IDs.
      */
     storyIds = [ ...new Set(storyIds) ];
+
+    if (storyIds.length === 0){
+      core.info(`No Pivotal Tracker story IDs detected`);
+      return;
+    }
+
     core.info(`Pivotal Tracker story IDs detected: ${storyIds.join(', ')}`);
 
     /**
      * Get the data for each Pivotal Tracker story.
      */
-    let stories: PivotalTrackerStory[]  = [];
+    let stories: PivotalTrackerStory[] = [];
     for (const storyId of storyIds) {
       core.info(`Getting data for story ${storyId}...`);
-      const { data: story } = await axios.get<PivotalTrackerStory>(`https://www.pivotaltracker.com/services/v5/stories/${storyId}`, {
+      const {data: story} = await axios.get<PivotalTrackerStory>(`https://www.pivotaltracker.com/services/v5/stories/${storyId}`, {
         headers: {
           'X-TrackerToken': PT_TOKEN
         }
@@ -125,21 +131,25 @@ async function run(): Promise<void> {
     /**
      * Add the comment to the PR.
      */
-    core.info(`Adding comments to pull request...`);
-    await octokit.issues.createComment({
-      ...github.context.repo,
-      issue_number: pullRequest.number,
-      body: commentBody,
-    });
+    if (commentBody) {
+      core.info(`Adding comments to pull request...`);
+      await octokit.issues.createComment({
+        ...github.context.repo,
+        issue_number: pullRequest.number,
+        body: commentBody,
+      });
 
-    await octokit.issues.createComment({
-      ...github.context.repo,
-      issue_number: pullRequest.number,
-      body: "### Formatting for Google Chat:\n\n"
-        + formatCommentBodyForGoogleChat(commentBody),
-    });
+      await octokit.issues.createComment({
+        ...github.context.repo,
+        issue_number: pullRequest.number,
+        body: "### Formatting for Google Chat:\n\n"
+            + formatCommentBodyForGoogleChat(commentBody),
+      });
+    } else {
+      core.info('No comments to add to pull request')
+    }
 
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error);
   }
 }
