@@ -96,14 +96,21 @@ async function run(): Promise<void> {
     let stories: PivotalTrackerStory[] = [];
     for (const storyId of storyIds) {
       core.info(`Getting data for story ${storyId}...`);
-      const { data: story } = await axios.get<PivotalTrackerStory>(
-        `https://www.pivotaltracker.com/services/v5/stories/${storyId}`,
-        {
-          headers: {
-            "X-TrackerToken": PT_TOKEN
+      let story;
+      try {
+        const { data } = await axios.get<PivotalTrackerStory>(
+          `https://www.pivotaltracker.com/services/v5/stories/${storyId}`,
+          {
+            headers: {
+              'X-TrackerToken': PT_TOKEN
+            }
           }
-        }
-      );
+        );
+        story = data;
+      } catch (e) {
+        core.info(`Could not retrieve story.`);
+        continue; // Skip to next iteration.
+      }
 
       /**
        * Match the release notes in the ticket description.
