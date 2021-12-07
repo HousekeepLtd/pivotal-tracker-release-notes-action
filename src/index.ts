@@ -79,7 +79,7 @@ async function run(): Promise<void> {
           ...github.context.repo,
           pull_number: pullRequest.number,
           per_page: 100,
-          page
+          page: page
         }
       );
       core.debug(JSON.stringify(response));

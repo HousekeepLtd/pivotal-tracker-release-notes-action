@@ -93,7 +93,7 @@ function run() {
                 }
                 const page = index + 1;
                 core.info(`Getting commits for PR number ${pullRequest.number} page ${page}...`);
-                const response = yield octokit.request("GET /repos/{owner}/{repo}/pulls/{pull_number}/commits", Object.assign(Object.assign({}, github.context.repo), { pull_number: pullRequest.number, per_page: 100, page }));
+                const response = yield octokit.request("GET /repos/{owner}/{repo}/pulls/{pull_number}/commits", Object.assign(Object.assign({}, github.context.repo), { pull_number: pullRequest.number, per_page: 100, page: page }));
                 core.debug(JSON.stringify(response));
                 commits.push(...response.data);
             }));
