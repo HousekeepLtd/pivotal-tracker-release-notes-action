@@ -156,6 +156,10 @@ function run() {
                 }
                 stories.push(story);
             }
+            const commentWarning = commits.length === 250
+                ? "### Warning: Github API returns a maximum of 250 commits." +
+                    "Some release notes may be missing.\n\n"
+                : "";
             /**
              * Compose the comment.
              */
@@ -174,8 +178,9 @@ function run() {
              */
             if (commentBody) {
                 core.info(`Adding comments to pull request...`);
-                yield octokit.issues.createComment(Object.assign(Object.assign({}, github.context.repo), { issue_number: pullRequest.number, body: commentBody }));
-                yield octokit.issues.createComment(Object.assign(Object.assign({}, github.context.repo), { issue_number: pullRequest.number, body: "### Formatting for Google Chat:\n\n" +
+                yield octokit.issues.createComment(Object.assign(Object.assign({}, github.context.repo), { issue_number: pullRequest.number, body: commentWarning + commentBody }));
+                yield octokit.issues.createComment(Object.assign(Object.assign({}, github.context.repo), { issue_number: pullRequest.number, body: commentWarning +
+                        "### Formatting for Google Chat:\n\n" +
                         formatCommentBodyForGoogleChat(commentBody) }));
             }
             else {

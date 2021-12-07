@@ -150,6 +150,11 @@ async function run(): Promise<void> {
       stories.push(story);
     }
 
+    const commentWarning = commits.length === 250
+      ? "### Warning: Github API returns a maximum of 250 commits." +
+        "Some release notes may be missing.\n\n"
+      : "";
+
     /**
      * Compose the comment.
      */
@@ -174,13 +179,14 @@ async function run(): Promise<void> {
       await octokit.issues.createComment({
         ...github.context.repo,
         issue_number: pullRequest.number,
-        body: commentBody
+        body: commentWarning + commentBody
       });
 
       await octokit.issues.createComment({
         ...github.context.repo,
         issue_number: pullRequest.number,
         body:
+          commentWarning +
           "### Formatting for Google Chat:\n\n" +
           formatCommentBodyForGoogleChat(commentBody)
       });
