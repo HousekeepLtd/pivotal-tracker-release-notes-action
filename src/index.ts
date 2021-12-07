@@ -59,18 +59,15 @@ async function run(): Promise<void> {
      * 250 commits, with a 100 per page limit. Loop over pages 1, 2 and 3 to create an
      * array of commits.
      */
-
-    [0, 100, 200].forEach(async (max, index) => {
-
+    let page = 1;
+    for (const max of [0, 100, 200]) {
       /**
        * Early exit. No need to check subsequent pages if we have received less than
        * the maximum number of results.
        */
       if (commits.length < max) {
-        return;
+        break;
       }
-
-      const page = index + 1;
 
       core.info(`Getting commits for PR number ${pullRequest.number} page ${page}...`);
       const response = await octokit.request(
@@ -84,7 +81,8 @@ async function run(): Promise<void> {
       );
       core.debug(JSON.stringify(response));
       commits.push(...response.data);
-    });
+      page++;
+    }
 
     core.info(`Found ${commits.length} commits.`);
 
