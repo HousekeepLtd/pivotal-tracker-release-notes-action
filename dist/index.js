@@ -77,14 +77,31 @@ function run() {
             /**
              * Get all commits on the PR.
              */
-            core.info(`Getting commits for PR number ${pullRequest.number}...`);
-            const response = yield octokit.request("GET /repos/{owner}/{repo}/pulls/{pull_number}/commits", Object.assign(Object.assign({}, github.context.repo), { pull_number: pullRequest.number, per_page: 100 }));
-            core.debug(JSON.stringify(response));
-            core.info(`Found ${response.data.length} commits:`);
+            let commits = [];
+            /**
+             * Attempt to get all commits on the PR. This endpoint will return a maximum of
+             * 250 commits, with a 100 per page limit. Loop over pages 1, 2 and 3 to create an
+             * array of commits.
+             */
+            [0, 100, 200].forEach((max, index) => __awaiter(this, void 0, void 0, function* () {
+                /**
+                 * Early exit. No need to check subsequent pages if we have received less than
+                 * the maximum number of results.
+                 */
+                if (commits.length < max) {
+                    return;
+                }
+                const page = index + 1;
+                core.info(`Getting commits for PR number ${pullRequest.number} page ${page}...`);
+                const response = yield octokit.request("GET /repos/{owner}/{repo}/pulls/{pull_number}/commits", Object.assign(Object.assign({}, github.context.repo), { pull_number: pullRequest.number, per_page: 100, page }));
+                core.debug(JSON.stringify(response));
+                commits.push(...response.data);
+            }));
+            core.info(`Found ${commits.length} commits.`);
             /**
              * From commits, filter down to a list of Pivotal Tracker story IDs.
              */
-            let storyIds = response.data
+            let storyIds = commits
                 .map(commit => commit.commit.message)
                 .map(message => {
                 core.info(`Commit message: ${message}`);

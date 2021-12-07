@@ -51,24 +51,47 @@ async function run(): Promise<void> {
     /**
      * Get all commits on the PR.
      */
-    core.info(`Getting commits for PR number ${pullRequest.number}...`);
-    const response = await octokit.request(
-      "GET /repos/{owner}/{repo}/pulls/{pull_number}/commits",
-      {
-        ...github.context.repo,
-        pull_number: pullRequest.number,
-        per_page: 100
+  
+    let commits: any[] = [];
+
+    /**
+     * Attempt to get all commits on the PR. This endpoint will return a maximum of
+     * 250 commits, with a 100 per page limit. Loop over pages 1, 2 and 3 to create an
+     * array of commits.
+     */
+
+    [0, 100, 200].forEach(async (max, index) => {
+
+      /**
+       * Early exit. No need to check subsequent pages if we have received less than
+       * the maximum number of results.
+       */
+      if (commits.length < max) {
+        return;
       }
-    );
 
-    core.debug(JSON.stringify(response));
+      const page = index + 1;
 
-    core.info(`Found ${response.data.length} commits:`);
+      core.info(`Getting commits for PR number ${pullRequest.number} page ${page}...`);
+      const response = await octokit.request(
+        "GET /repos/{owner}/{repo}/pulls/{pull_number}/commits",
+        {
+          ...github.context.repo,
+          pull_number: pullRequest.number,
+          per_page: 100,
+          page
+        }
+      );
+      core.debug(JSON.stringify(response));
+      commits.push(...response.data);
+    });
+
+    core.info(`Found ${commits.length} commits.`);
 
     /**
      * From commits, filter down to a list of Pivotal Tracker story IDs.
      */
-    let storyIds = response.data
+    let storyIds = commits
       .map(commit => commit.commit.message)
       .map(message => {
         core.info(`Commit message: ${message}`);
