@@ -54,6 +54,12 @@ async function run(): Promise<void> {
   
     let commits: any[] = [];
 
+    /**
+     * Attempt to get all commits on the PR. This endpoint will return a maximum of
+     * 250 commits, with a 100 per page limit. Loop over pages 1, 2 and 3 to create an
+     * array of commits.
+     */
+
     [0, 100, 200].forEach(async (max, index) => {
 
       /**

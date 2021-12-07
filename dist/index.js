@@ -78,6 +78,11 @@ function run() {
              * Get all commits on the PR.
              */
             let commits = [];
+            /**
+             * Attempt to get all commits on the PR. This endpoint will return a maximum of
+             * 250 commits, with a 100 per page limit. Loop over pages 1, 2 and 3 to create an
+             * array of commits.
+             */
             [0, 100, 200].forEach((max, index) => __awaiter(this, void 0, void 0, function* () {
                 /**
                  * Early exit. No need to check subsequent pages if we have received less than
