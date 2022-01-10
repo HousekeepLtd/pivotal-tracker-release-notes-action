@@ -138,7 +138,7 @@ async function run(): Promise<void> {
        * Must start with **Why** and finish with **Who**.
        */
       const releaseNotes = story.description
-        ? story.description.match(/\*\*Why[\s\S]+\*\*Who.+$/m)
+        ? story.description.match(/\*\*Why[\s\S]*?\*\*Who.+$/mg)
         : null;
       if (releaseNotes) {
         core.info(`Release notes found!`);
