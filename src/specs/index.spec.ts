@@ -1,4 +1,4 @@
-import { testData } from './sample-story-descriptions';
+import { testData } from './test-story-descriptions';
 import { extractLastReleaseMessage } from '../utils'
 
 
