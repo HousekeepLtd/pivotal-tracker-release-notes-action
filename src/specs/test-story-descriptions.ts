@@ -4,8 +4,15 @@ interface DescriptionToReleaseMessageTestData {
     releaseMessage: string;
 }
 
+const descriptionIsEmptyString: DescriptionToReleaseMessageTestData = {
+    testDescription: 'returns empty string if story description is empty string',
+    storyDescription: '',
+    releaseMessage: ''
+}
+
+
 const descriptionWithNoReleaseMessage: DescriptionToReleaseMessageTestData = {
-    testDescription: 'returns empty string if no release message contained',
+    testDescription: 'returns empty string if no release message contained in description with text',
     storyDescription: 'This is my string',
     releaseMessage: ''
 }
@@ -43,7 +50,7 @@ const descriptionWithThreeReleaseMessages: DescriptionToReleaseMessageTestData =
 }
 
 const testData: DescriptionToReleaseMessageTestData[] = [
-    descriptionWithNoReleaseMessage, descriptionWithOneReleaseMessage,
+    descriptionIsEmptyString, descriptionWithNoReleaseMessage, descriptionWithOneReleaseMessage,
     descriptionWithTwoReleaseMessages, descriptionWithThreeReleaseMessages
 ]
 
