@@ -182,7 +182,7 @@ async function run(): Promise<void> {
     } else {
       core.info("No comments to add to pull request");
     }
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error);
   }
 }
