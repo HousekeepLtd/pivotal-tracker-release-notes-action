@@ -2,6 +2,8 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import axios from "axios";
 
+import { extractLastReleaseMessage } from "./utils";
+
 type StoryType = "bug" | "chore" | "feature";
 
 interface PivotalTrackerStory {
@@ -51,7 +53,7 @@ async function run(): Promise<void> {
     /**
      * Get all commits on the PR.
      */
-  
+
     let commits: any[] = [];
 
     /**
@@ -123,7 +125,7 @@ async function run(): Promise<void> {
           `https://www.pivotaltracker.com/services/v5/stories/${storyId}`,
           {
             headers: {
-              'X-TrackerToken': PT_TOKEN
+              "X-TrackerToken": PT_TOKEN
             }
           }
         );
@@ -133,27 +135,16 @@ async function run(): Promise<void> {
         continue; // Skip to next iteration.
       }
 
-      /**
-       * Match the release notes in the ticket description.
-       * Must start with **Why** and finish with **Who**.
-       */
-      const releaseNotes = story.description
-        ? story.description.match(/\*\*Why[\s\S]+\*\*Who.+$/m)
-        : null;
-      if (releaseNotes) {
-        core.info(`Release notes found!`);
-        story.release_notes = releaseNotes[0];
-      } else {
-        core.info(`No release notes found :(`);
-      }
+      story.release_notes = extractLastReleaseMessage(story.description);
 
       stories.push(story);
     }
 
-    const commentWarning = commits.length === 250
-      ? "### Warning: Github API returns a maximum of 250 commits." +
-        "Some release notes may be missing.\n\n"
-      : "";
+    const commentWarning =
+      commits.length === 250
+        ? "### Warning: Github API returns a maximum of 250 commits." +
+          "Some release notes may be missing.\n\n"
+        : "";
 
     /**
      * Compose the comment.
@@ -161,9 +152,7 @@ async function run(): Promise<void> {
     let commentBody = "";
     for (const story of stories) {
       const title = story.name.replace("`", '"').toUpperCase();
-      commentBody += `**${storyTypeLabel(
-        story.story_type
-      )}: ${title.trim()}**\n`;
+      commentBody += `**${storyTypeLabel(story.story_type)}: ${title.trim()}**\n`;
       if (story.release_notes) {
         commentBody += `${story.release_notes}\n`;
       }
