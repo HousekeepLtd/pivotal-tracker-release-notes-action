@@ -53,7 +53,7 @@ async function run(): Promise<void> {
     /**
      * Get all commits on the PR.
      */
-  
+
     let commits: any[] = [];
 
     /**
@@ -125,7 +125,7 @@ async function run(): Promise<void> {
           `https://www.pivotaltracker.com/services/v5/stories/${storyId}`,
           {
             headers: {
-              'X-TrackerToken': PT_TOKEN
+              "X-TrackerToken": PT_TOKEN
             }
           }
         );
@@ -140,10 +140,11 @@ async function run(): Promise<void> {
       stories.push(story);
     }
 
-    const commentWarning = commits.length === 250
-      ? "### Warning: Github API returns a maximum of 250 commits." +
-        "Some release notes may be missing.\n\n"
-      : "";
+    const commentWarning =
+      commits.length === 250
+        ? "### Warning: Github API returns a maximum of 250 commits." +
+          "Some release notes may be missing.\n\n"
+        : "";
 
     /**
      * Compose the comment.
@@ -151,9 +152,7 @@ async function run(): Promise<void> {
     let commentBody = "";
     for (const story of stories) {
       const title = story.name.replace("`", '"').toUpperCase();
-      commentBody += `**${storyTypeLabel(
-        story.story_type
-      )}: ${title.trim()}**\n`;
+      commentBody += `**${storyTypeLabel(story.story_type)}: ${title.trim()}**\n`;
       if (story.release_notes) {
         commentBody += `${story.release_notes}\n`;
       }
@@ -183,7 +182,7 @@ async function run(): Promise<void> {
     } else {
       core.info("No comments to add to pull request");
     }
-  } catch (error: any) {
+  } catch (error) {
     core.setFailed(error);
   }
 }
