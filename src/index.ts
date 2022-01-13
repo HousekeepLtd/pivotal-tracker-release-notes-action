@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import axios from "axios";
 
-import {extractLastReleaseMessage} from "./utils";
+import { extractLastReleaseMessage } from "./utils";
 
 type StoryType = "bug" | "chore" | "feature";
 
@@ -135,7 +135,7 @@ async function run(): Promise<void> {
         continue; // Skip to next iteration.
       }
 
-      story.release_notes = extractLastReleaseMessage(story.description)
+      story.release_notes = extractLastReleaseMessage(story.description);
 
       stories.push(story);
     }
