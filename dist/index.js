@@ -139,6 +139,8 @@ function run() {
                 }
                 catch (e) {
                     core.info(`Could not retrieve story.`);
+                    core.info(e.message);
+                    core.error(e, e.stack);
                     continue; // Skip to next iteration.
                 }
                 story.release_notes = (0, utils_1.extractLastReleaseMessage)(story.description);

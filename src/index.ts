@@ -130,8 +130,10 @@ async function run(): Promise<void> {
           }
         );
         story = data;
-      } catch (e) {
+      } catch (e: any) {
         core.info(`Could not retrieve story.`);
+        core.info(e.message);
+        core.error(e, e.stack);
         continue; // Skip to next iteration.
       }
 
