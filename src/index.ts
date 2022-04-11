@@ -14,20 +14,6 @@ interface PivotalTrackerStory {
   release_notes?: string;
 }
 
-const storyTypeLabel = (type: StoryType): string => {
-  switch (type) {
-    case "bug": {
-      return "Bugfix";
-    }
-    case "chore": {
-      return "Chore";
-    }
-    case "feature": {
-      return "Feature";
-    }
-  }
-};
-
 const formatCommentBodyForGoogleChat = (commentBody: string): string => {
   let str = "```\n";
   str += commentBody.replace(/\*\*/g, "*");
@@ -153,8 +139,8 @@ async function run(): Promise<void> {
      */
     let commentBody = "";
     for (const story of stories) {
-      const title = story.name.replace("`", '"').toUpperCase();
-      commentBody += `**${storyTypeLabel(story.story_type)}: ${title.trim()}**\n`;
+      const title = story.name.replace("`", '"');
+      commentBody += `**TECH (${story.story_type}): ${title.trim()}**\n`;
       if (story.release_notes) {
         commentBody += `${story.release_notes}\n`;
       }
