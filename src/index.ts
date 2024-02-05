@@ -153,13 +153,13 @@ async function run(): Promise<void> {
      */
     if (commentBody) {
       core.info(`Adding comments to pull request...`);
-      await octokit.issues.createComment({
+      await octokit.rest.issues.createComment({
         ...github.context.repo,
         issue_number: pullRequest.number,
         body: commentWarning + commentBody
       });
 
-      await octokit.issues.createComment({
+      await octokit.rest.issues.createComment({
         ...github.context.repo,
         issue_number: pullRequest.number,
         body:
