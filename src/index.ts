@@ -152,23 +152,17 @@ async function run(): Promise<void> {
      * Add the comment to the PR.
      */
     if (commentBody) {
-      core.info(`Adding comments to pull request...`);
-      await octokit.rest.issues.createComment({
-        ...github.context.repo,
-        issue_number: pullRequest.number,
-        body: commentWarning + commentBody
-      });
+      core.info(`Adding comment to pull request...`);
 
       await octokit.rest.issues.createComment({
         ...github.context.repo,
         issue_number: pullRequest.number,
         body:
           commentWarning +
-          "### Formatting for Google Chat:\n\n" +
           formatCommentBodyForGoogleChat(commentBody)
       });
     } else {
-      core.info("No comments to add to pull request");
+      core.info("No comment to add to pull request");
     }
   } catch (error: any) {
     core.setFailed(error);
