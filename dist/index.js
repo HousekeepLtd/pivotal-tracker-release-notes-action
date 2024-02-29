@@ -158,14 +158,12 @@ function run() {
              * Add the comment to the PR.
              */
             if (commentBody) {
-                core.info(`Adding comments to pull request...`);
-                yield octokit.issues.createComment(Object.assign(Object.assign({}, github.context.repo), { issue_number: pullRequest.number, body: commentWarning + commentBody }));
+                core.info(`Adding comment to pull request...`);
                 yield octokit.issues.createComment(Object.assign(Object.assign({}, github.context.repo), { issue_number: pullRequest.number, body: commentWarning +
-                        "### Formatting for Google Chat:\n\n" +
                         formatCommentBodyForGoogleChat(commentBody) }));
             }
             else {
-                core.info("No comments to add to pull request");
+                core.info("No comment to add to pull request");
             }
         }
         catch (error) {
